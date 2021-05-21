@@ -63,7 +63,6 @@ const remove = async (params, credentials) => {
   }
 }
 
-
 const like = async (params, credentials, postId) => {
   try {
     let response = await fetch('/api/posts/like/', {
@@ -80,7 +79,6 @@ const like = async (params, credentials, postId) => {
     console.log(err)
   }
 }
-
 
 const unlike = async (params, credentials, postId) => {
   try {
@@ -99,6 +97,39 @@ const unlike = async (params, credentials, postId) => {
   }
 }
 
+const views = async (params, credentials, postId) => {
+  try {
+    let response = await fetch('/api/posts/view/', {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.t
+      },
+      body: JSON.stringify({ userId:params.userId, postId: postId })
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
+
+const unView = async (params, credentials, postId) => {
+  try {
+    let response = await fetch('/api/posts/unView/', {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + credentials.t
+      },
+      body: JSON.stringify({userId:params.userId, postId: postId})
+    })
+    return await response.json()
+  } catch(err) {
+    console.log(err)
+  }
+}
 
 const comment = async (params, credentials, postId, comment) => {
   try {
@@ -143,6 +174,8 @@ export {
   remove,
   like,
   unlike,
+  views,
+  unView,
   comment,
   uncomment
 }
