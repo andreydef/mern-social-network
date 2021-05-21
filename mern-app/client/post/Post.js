@@ -10,6 +10,7 @@ import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import FavoriteIcon from '@material-ui/icons/Favorite'
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import CommentIcon from '@material-ui/icons/Comment'
 import Divider from '@material-ui/core/Divider'
@@ -17,7 +18,7 @@ import Divider from '@material-ui/core/Divider'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link } from 'react-router-dom'
-import { like, remove, unlike } from './api-post.js'
+import { like, remove, unlike, views, unView } from './api-post.js'
 import Comments from './Comments'
 
 const useStyles = makeStyles(theme => ({
@@ -57,10 +58,15 @@ export default function Post (props){
   const checkLike = (likes) => {
     return likes.indexOf(jwt.user._id) !== -1
   }
+  const checkView = (view) => {
+    return view.indexOf(jwt.user._id) !== -1
+  }
   const [values, setValues] = useState({
     like: checkLike(props.post.likes),
     likes: props.post.likes.length,
-    comments: props.post.comments
+    comments: props.post.comments,
+    view: checkView(props.post.views),
+    views: props.post.views.length
   })
   const clickLike = () => {
     let callApi = values.like ? unlike : like
@@ -73,6 +79,21 @@ export default function Post (props){
         console.log(data.error)
       } else {
         setValues({...values, like: !values.like, likes: data.likes.length})
+      }
+    })
+  }
+
+  const clickView = () => {
+    let callApi = values.view ? unView : views
+    callApi({
+      userId: jwt.user._id
+    }, {
+      t: jwt.token
+    }, props.post._id).then((data) => {
+      if (data.error) {
+        console.log(data.error)
+      } else {
+        setValues({...values, view: !values.view, views: data.views.length})
       }
     })
   }
@@ -110,6 +131,7 @@ export default function Post (props){
             subheader={(new Date(props.post.created)).toDateString()}
             className={classes.cardHeader}
           />
+
         <CardContent className={classes.cardContent}>
           <Typography  component="p" className={classes.text}>
             {props.post.text}
@@ -123,6 +145,15 @@ export default function Post (props){
             </div>)}
         </CardContent>
         <CardActions>
+          { values.view
+              ? <IconButton onClick={clickView} className={classes.button} aria-label="View" color="secondary">
+                <VisibilityIcon />
+              </IconButton>
+              : <IconButton onClick={clickView} className={classes.button} aria-label="UnView" color="secondary">
+                <VisibilityIcon />
+              </IconButton> }
+          <span>{values.views}</span>
+
           { values.like
             ? <IconButton onClick={clickLike} className={classes.button} aria-label="Like" color="secondary">
                 <FavoriteIcon />
