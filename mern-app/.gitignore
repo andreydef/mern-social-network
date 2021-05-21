@@ -2,4 +2,5 @@
 /dist/
 /data/
 ../.idea/
+package-lock.json
 npm-debug.log
