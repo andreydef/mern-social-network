@@ -55,9 +55,11 @@ const useStyles = makeStyles(theme => ({
 export default function Post (props){
   const classes = useStyles()
   const jwt = auth.isAuthenticated()
+
   const checkLike = (likes) => {
     return likes.indexOf(jwt.user._id) !== -1
   }
+
   const checkView = (view) => {
     return view.indexOf(jwt.user._id) !== -1
   }
@@ -68,6 +70,7 @@ export default function Post (props){
     view: checkView(props.post.views),
     views: props.post.views.length
   })
+
   const clickLike = () => {
     let callApi = values.like ? unlike : like
     callApi({
@@ -112,6 +115,7 @@ export default function Post (props){
         console.log(data.error)
       } else {
         props.onRemove(props.post)
+        window.location.reload()
       }
     })
   }

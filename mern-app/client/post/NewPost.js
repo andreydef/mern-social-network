@@ -84,6 +84,7 @@ export default function NewPost (props){
       } else {
         setValues({...values, text:'', photo: ''})
         props.addUpdate(data)
+        window.location.reload();
       }
     })
   }
