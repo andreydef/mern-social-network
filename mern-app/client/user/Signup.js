@@ -13,7 +13,9 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import {create} from './api-user.js'
-import {Link} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
+import {signin} from "../auth/api-auth";
+import auth from "../auth/auth-helper";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -66,11 +68,21 @@ export default function Signup (){
         setValues({ ...values, error: data.error})
       } else {
         setValues({ ...values, error: '', open: true})
+
+        signin(user).then((data) => {
+          if (data.error) {
+            setValues({ ...values, error: data.error})
+          } else {
+            auth.authenticate(data, () => {
+                setValues({ ...values, error: ''})
+            })
+          }
+        })
       }
     })
   }
 
-    return (<div>
+  return (<div>
       <Card className={classes.card}>
         <CardContent>
           <Typography variant="h6" className={classes.title}>
@@ -89,6 +101,7 @@ export default function Signup (){
           <Button color="primary" variant="contained" onClick={clickSubmit} className={classes.submit}>Submit</Button>
         </CardActions>
       </Card>
+
       <Dialog open={values.open} disableBackdropClick={true}>
         <DialogTitle>New Account</DialogTitle>
         <DialogContent>
@@ -97,12 +110,8 @@ export default function Signup (){
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Link to="/signin">
-            <Button color="primary" autoFocus="autoFocus" variant="contained">
-              Sign In
-            </Button>
-          </Link>
+          <Redirect to={`/users/`}/>
         </DialogActions>
       </Dialog>
-    </div>)
+  </div>)
 }
