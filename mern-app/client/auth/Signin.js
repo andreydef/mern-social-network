@@ -57,7 +57,7 @@ export default function Signin(props) {
         setValues({ ...values, error: data.error})
       } else {
         auth.authenticate(data, () => {
-          setValues({ ...values, error: '',redirectToReferrer: true})
+          setValues({ ...values, error: '', redirectToReferrer: true})
         })
       }
     })
