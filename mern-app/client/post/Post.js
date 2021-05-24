@@ -69,7 +69,7 @@ export default function Post (props){
     views: props.post.views.length
   })
   const clickLike = () => {
-    let callApi = values.like ? unlike : like
+    const callApi = values.like ? unlike : like
     callApi({
       userId: jwt.user._id
     }, {
@@ -78,13 +78,17 @@ export default function Post (props){
       if (data.error) {
         console.log(data.error)
       } else {
-        setValues({...values, like: !values.like, likes: data.likes.length})
+        if (data.likes.length === 0) {
+          setValues({...values, like: !values.like, likes: data.likes.length = 0 })
+        } else {
+          setValues({...values, like: !values.like, likes: data.likes.length = 1 })
+        }
       }
     })
   }
 
   const clickView = () => {
-    let callApi = values.view ? unView : views
+    const callApi = values.view ? unView : views
     callApi({
       userId: jwt.user._id
     }, {
@@ -93,7 +97,11 @@ export default function Post (props){
       if (data.error) {
         console.log(data.error)
       } else {
-        setValues({...values, view: !values.view, views: data.views.length})
+        if (data.views.length === 0) {
+          setValues({...values, view: !values.view, views: data.views.length = 0 })
+        } else {
+          setValues({...values, view: !values.view, views: data.views.length = 1 })
+        }
       }
     })
   }
@@ -116,7 +124,7 @@ export default function Post (props){
     })
   }
 
-    return (
+  return (
       <Card className={classes.card}>
         <CardHeader
             avatar={
@@ -160,7 +168,8 @@ export default function Post (props){
               </IconButton>
             : <IconButton onClick={clickLike} className={classes.button} aria-label="Unlike" color="secondary">
                 <FavoriteBorderIcon />
-              </IconButton> } <span>{values.likes}</span>
+              </IconButton> }
+          <span>{values.likes}</span>
               <IconButton className={classes.button} aria-label="Comment" color="secondary">
                 <CommentIcon/>
               </IconButton> <span>{values.comments.length}</span>
@@ -168,8 +177,7 @@ export default function Post (props){
         <Divider/>
         <Comments postId={props.post._id} comments={values.comments} updateComments={updateComments}/>
       </Card>
-    )
-  
+  )
 }
 
 Post.propTypes = {
